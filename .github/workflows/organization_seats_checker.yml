@@ -7,21 +7,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set up go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
+
+      - name: Install hcl2json
+        run: |
+          go install github.com/tmccombs/hcl2json@latest
+
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
 
       - name: Count seats and members
         id: seats_members
-        uses: M-Yamashita01/check-members@v0.5
+        uses: M-Yamashita01/check-members@v0.6-pre
         env:
           ACCESS_TOKEN: ${{ secrets.READ_ORG_TOKEN }}
-          # Set absolute file path to the terraform file containing the github_membership resources.
-          # Example: '${{ github.workspace }}/membership.tf'
-          MEMBERSHIP_FILE_PATH: '${{ github.workspace }}/membership.tf' 
-          # Set absolute file path to the terraform file containing the github_repository_collaborator resources.
-          # Example: '${{ github.workspace }}/repository_collaborator.tf'
-          REPOSITORY_COLLABORATOR_FILE_PATH: '${{ github.workspace }}/repository_collaborator.tf'
+          TERRAFORM_DIRECTORY_PATH: '${{ github.workspace }}' 
           ORGANIZATION_NAME: 'my-organization-sandbox'
 
       - name: Post comments
