@@ -22,7 +22,7 @@ jobs:
 
       - name: Count seats and members
         id: seats_members
-        uses: M-Yamashita01/check-members@v0.6
+        uses: M-Yamashita01/check-members@v0.7-pre
         env:
           ACCESS_TOKEN: ${{ secrets.READ_ORG_TOKEN }}
           TERRAFORM_DIRECTORY_PATH: '${{ github.workspace }}' 
