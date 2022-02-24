@@ -40,10 +40,6 @@ jobs:
             output += additional_message
 
             notExistedUsernamesMessage = `all users exists in GitHub.\n`
-            If (${{steps.seats_members.outputs.not_existed_usernames_in_github}}.length > 0) {
-              joinedNotExistedUsernames = ${{steps.seats_members.outputs.not_existed_usernames_in_github}}.join()
-              notExistedUsernamesMessage = `Some GitHub user are not existed. UserList: ${joinedNotExistedUsernames}\n`
-            }
 
             output += notExistedUsernamesMessage
 
