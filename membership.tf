@@ -12,7 +12,7 @@ resource "github_membership" "membership_for_some_user2" {
   role     = "member"
 }
 
-resource "github_membership" "membership_for_some_user2" {
+resource "github_membership" "membership_for_some_user3" {
   username = "hogefoobarhoge"
   role     = "member"
 }
