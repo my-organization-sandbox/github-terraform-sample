@@ -40,8 +40,9 @@ jobs:
             output += additional_message
 
             var notExistedUsernamesMessage = `all users exists in GitHub.\n`
-            const notExistedUsernamesInGitHub = ${{steps.seats_members.outputs.not_existed_usernames_in_github}}
-            if (notExistedUsernamesInGitHub.length > 0){
+            if (${{steps.seats_members.outputs.not_existed_usernames_in_github}}.length > 0){
+              const joinedNotExistedUsernames = ${{steps.seats_members.outputs.not_existed_usernames_in_github}}.join()
+              notExistedUsernamesMessage = `Some GitHub user are not existed. UserList: ${joinedNotExistedUsernames}\n`
             }
 
             output += notExistedUsernamesMessage
