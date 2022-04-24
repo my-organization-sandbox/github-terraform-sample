@@ -18,12 +18,11 @@ jobs:
       - name: Count seats and members
         id: seats_members
         uses: M-Yamashita01/check-members@enabled_checking_member_existence_for_test
-        with:
-          verify_existence_account: true
         env:
           ACCESS_TOKEN: ${{ secrets.GH_ADMIN_ACCESS_TOKEN }}
           TERRAFORM_DIRECTORY_PATH: '${{ github.workspace }}'
           ORGANIZATION_NAME: 'my-organization-sandbox'
+          INPUT_VERIFY_EXISTENCE_ACCOUNT: 'true'
 
       - name: Post comments
         uses: actions/github-script@v5
