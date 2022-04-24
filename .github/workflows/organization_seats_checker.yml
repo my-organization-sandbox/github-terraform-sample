@@ -17,7 +17,7 @@ jobs:
 
       - name: Count seats and members
         id: seats_members
-        uses: M-Yamashita01/check-members@v0.7-pre
+        uses: M-Yamashita01/check-members@v0.8-pre
         with:
           verify_existence_account: true
         env:
@@ -39,16 +39,15 @@ jobs:
             if (numberOfSeatsInShortage > 0) {
               additional_message = `There are ${numberOfSeatsInShortage} seats missing. Please add seats.\n`
             }
-            output += additional_message
 
-            var notExistedUsernamesMessage = `all users exists in GitHub.\n`
-            if (${{steps.seats_members.outputs.not_existed_usernames_in_github}}.length > 0){
-              const joinedNotExistedUsernames = ${{steps.seats_members.outputs.not_existed_usernames_in_github}}.join()
-              notExistedUsernamesMessage = `Some GitHub user are not existed. UserList: ${joinedNotExistedUsernames}\n`
+            notify_non_existing_member_message = ``
+            non_existing_members = ${{steps.seats_members.outputs.non_existing_members}}
+            if (non_existing_members.length > 0) {
+              notify_non_existing_member_message = `Some members in terraform files do not exist. Non-existing members: ${non_existing_members} .\n`
             }
 
-            output += notExistedUsernamesMessage
-
+            output += additional_message
+            output += notify_non_existing_member_message
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
