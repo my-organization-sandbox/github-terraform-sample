@@ -43,7 +43,7 @@ jobs:
             const non_existing_members = "${{ steps.seats_members.outputs.non_existing_members }}"
             if (non_existing_members.length > 0) {
               notify_non_existing_member_message = `Some members in terraform files do not exist.\n
-                ・Non-existing members: ${non_existing_members}.\n\n
+              ・Non-existing members: ${non_existing_members}.\n\n
               `
             }
 
