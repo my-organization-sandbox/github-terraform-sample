@@ -10,6 +10,19 @@ jobs:
       - name: Install hcl2json
         run: brew install hcl2json
 
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.9
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform plan
+        run: terraform plan -out plan-binary
+
+      - name: Terraform show --json
+        run:  terraform show --json plan-binary >> terraform-json.json
+
       - name: Set up ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -17,10 +30,10 @@ jobs:
 
       - name: Count seats and members
         id: seats_members
-        uses: M-Yamashita01/check-members@enabled_checking_member_existence_for_test
+        uses: M-Yamashita01/check-members@improve-member-count-in-terraform-files
         env:
           ACCESS_TOKEN: ${{ secrets.GH_ADMIN_ACCESS_TOKEN }}
-          TERRAFORM_DIRECTORY_PATH: '${{ github.workspace }}'
+          TERRAFORM_JSON_FILE_PATH: '${{ github.workspace }}/terraform-json.json'
           ORGANIZATION_NAME: 'my-organization-sandbox'
           INPUT_VERIFY_EXISTENCE_ACCOUNT: 'true'
 
