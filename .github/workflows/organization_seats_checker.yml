@@ -21,7 +21,7 @@ jobs:
         run: terraform plan -out plan-binary
 
       - name: Terraform show --json
-        run:  terraform show --json plan-binary >> terraform-json.json
+        run:  terraform show --json plan-binary | jq >> terraform-json.json
 
       - name: Set up ruby
         uses: ruby/setup-ruby@v1
