@@ -7,8 +7,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install hcl2json
-        run: brew install hcl2json
+      # - name: Install hcl2json
+        # run: brew install hcl2json
 
       - uses: hashicorp/setup-terraform@v2
         with:
