@@ -31,7 +31,7 @@ jobs:
 
       - name: Count seats and members
         id: seats_members
-        uses: M-Yamashita01/check-members@improve-member-count-in-terraform-files
+        uses: M-Yamashita01/check-members@fix-replace-set-output
         env:
           ACCESS_TOKEN: ${{ secrets.GH_ADMIN_ACCESS_TOKEN }}
           TERRAFORM_JSON_FILE_PATH: '${{ github.workspace }}/terraform-json.json'
