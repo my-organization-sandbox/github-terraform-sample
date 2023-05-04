@@ -19,7 +19,26 @@ jobs:
         run: terraform init
 
       - name: Terraform plan
+        id: plan
         run: terraform plan -out plan-binary
+
+      - uses: actions/github-script@v6
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            \n
+            ${process.env.PLAN}`
+
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+      - run: exit 1
 
       - name: Terraform show --json
         run:  terraform show --json plan-binary | jq >> terraform-json.json
