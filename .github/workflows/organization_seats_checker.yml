@@ -31,11 +31,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            \n
 
             <details><summary>Show Plan</summary>
-            \`\`\`\n
-            terraform\n${{ steps.plan.outputs.stdout }}
+            \n
+            \`\`\`terraform\n${{ steps.plan.outputs.stdout }}
             \`\`\`
             </details>`;
 
