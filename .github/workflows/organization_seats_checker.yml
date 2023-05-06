@@ -20,7 +20,7 @@ jobs:
 
       - name: Terraform plan
         id: plan
-        run: terraform plan -out=plan-binary
+        run: terraform plan -no-color -out=plan-binary
 
       - name: Terraform show
         id: show
@@ -30,65 +30,13 @@ jobs:
           cat tfplan.txt
 
       - uses: actions/github-script@v6
-        env:
-          PLAN: "terraform\n${{ steps.show.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
             \n
-            ${process.env.PLAN}`
+            ${{ steps.show.outputs.stdout }}
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-      - run: exit 1
-
-      - name: Terraform show --json
-        run:  terraform show --json plan-binary | jq >> terraform-json.json
-
-      - name: Set up ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-
-      - name: Count seats and members
-        id: seats_members
-        uses: M-Yamashita01/check-members@v0.9
-        env:
-          ACCESS_TOKEN: ${{ secrets.GH_ADMIN_ACCESS_TOKEN }}
-          TERRAFORM_JSON_FILE_PATH: '${{ github.workspace }}/terraform-json.json'
-          ORGANIZATION_NAME: 'my-organization-sandbox'
-          INPUT_VERIFY_EXISTENCE_ACCOUNT: 'true'
-
-      - name: Post comments
-        uses: actions/github-script@v5
-        with:
-          script: |
-            var output = `Current seats in organization and members in terraform files.\n
-              ・Seats that membership used: ${{ steps.seats_members.outputs.filled_seats }}\n
-              ・Max seats an organization can use: ${{ steps.seats_members.outputs.max_seats }}\n
-              ・Total number of membership in terraform files: ${{ steps.seats_members.outputs.members_in_terraform }}\n\n
-            `
-            const numberOfSeatsInShortage = ${{ steps.seats_members.outputs.members_in_terraform }} - ${{ steps.seats_members.outputs.max_seats }}
-            var additional_message = `There is no shortage of seats.\n`
-            if (numberOfSeatsInShortage > 0) {
-              additional_message = `There are ${numberOfSeatsInShortage} seats missing. Please add seats.\n\n`
-            }
-
-            var notify_non_existing_member_message = ``
-            const non_existing_members = "${{ steps.seats_members.outputs.non_existing_members }}"
-            if (non_existing_members.length > 0) {
-              notify_non_existing_member_message = `Some members in terraform files do not exist. Please check the members.\n
-              ・Non-existing members: ${non_existing_members}.\n\n
-              `
-            }
-
-            output += additional_message
-            output += notify_non_existing_member_message
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
