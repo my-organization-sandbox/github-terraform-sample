@@ -27,6 +27,7 @@ jobs:
         run: |
           terraform show -no-color -json plan-binary > tfplan.json
           terraform show -no-color plan-binary
+          puts "test comment"
 
       - uses: actions/github-script@v6
         with:
