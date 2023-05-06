@@ -20,13 +20,13 @@ jobs:
 
       - name: Terraform plan
         id: plan
-        run: terraform plan -out plan-binary
+        run: terraform plan -out=plan-binary
 
       - name: Terraform show
         id: show
         run: |
-          terraform show plan-binary > tfplan.txt
-          terraform show -json plan-binary > tfplan.json
+          terraform show -no-color plan-binary > tfplan.txt
+          terraform show -no-color -json plan-binary > tfplan.json
           cat tfplan.txt
 
       - uses: actions/github-script@v6
