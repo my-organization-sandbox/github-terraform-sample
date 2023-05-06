@@ -36,7 +36,7 @@ jobs:
             \n
 
             <details><summary>Show Plan</summary>
-            \`\`\`terraform\n${{ steps.show.outputs.stdout }}\`\`\`
+            \`\`\`terraform\n${{ steps.plan.outputs.stdout }}\`\`\`
             </details>`;
 
 
