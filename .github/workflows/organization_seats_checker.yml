@@ -25,9 +25,8 @@ jobs:
       - name: Terraform show
         id: show
         run: |
-          terraform show -no-color plan-binary > tfplan.txt
           terraform show -no-color -json plan-binary > tfplan.json
-          cat tfplan.txt
+          terraform show -no-color plan-binary
 
       - uses: actions/github-script@v6
         with:
