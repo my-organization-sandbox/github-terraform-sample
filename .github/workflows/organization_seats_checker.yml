@@ -23,6 +23,7 @@ jobs:
         run: terraform plan -out plan-binary
 
       - name: Terraform show
+        id: show
         run: |
           terraform show plan-binary > tfplan.txt
           terraform show -json plan-binary > tfplan.json
@@ -30,7 +31,7 @@ jobs:
 
       - uses: actions/github-script@v6
         env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+          PLAN: "terraform\n${{ steps.show.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
