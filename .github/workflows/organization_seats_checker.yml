@@ -25,6 +25,10 @@ jobs:
       - name: Terraform show
         run: |
           terraform show -no-color -json plan-binary > tfplan.json
+
+      - name: Install jq
+        run: |
+          sudo apt-get install jq
           jq . tfplan.json >> terraform-json.json
 
       - uses: actions/upload-artifact@v2
