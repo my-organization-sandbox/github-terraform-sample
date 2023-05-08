@@ -24,7 +24,8 @@ jobs:
 
       - name: Terraform show
         run: |
-          terraform show -no-color -json plan-binary | jq >> terraform-json.json
+          terraform show -no-color -json plan-binary > tfplan.json
+          jq . tfplan.json >> terraform-json.json
 
       - uses: actions/upload-artifact@v2
         with:
