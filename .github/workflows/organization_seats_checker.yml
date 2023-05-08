@@ -26,6 +26,21 @@ jobs:
         run: |
           terraform show -no-color -json plan-binary > tfplan.json
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: tfplan
+          path: tfplan.json
+
+      - name: remove plan-binary
+        run: |
+          rm plan-binary
+          rm tfplan.json
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: tfplan
+          path: tfplan.json
+
       - uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
