@@ -7,21 +7,71 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install hcl2json
-        run: brew install hcl2json
+      # - name: Install hcl2json
+        # run: brew install hcl2json
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.9
+          # terraform_wrapper: false
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform plan
+        id: plan
+        run: terraform plan -no-color -out=plan-binary
+
+      - name: Terraform show
+        run: |
+          terraform show -no-color -json plan-binary | jq . >> terraform-json.json
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: tfplan
+          path: tfplan.json
+
+      - name: remove plan-binary
+        run: |
+          rm plan-binary
+          rm tfplan.json
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: tfplan
 
       - name: Set up ruby
-      - uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
 
       - name: Count seats and members
         id: seats_members
-        uses: M-Yamashita01/check-members@v0.7-pre
+        uses: M-Yamashita01/check-members@v0.9
         env:
-          ACCESS_TOKEN: ${{ secrets.GITHUB_ADMIN_ACCESS_TOKEN }}
-          TERRAFORM_DIRECTORY_PATH: '${{ github.workspace }}/terraform/directory/path' 
-          ORGANIZATION_NAME: 'organization_name'
+          ACCESS_TOKEN: ${{ secrets.GH_ADMIN_ACCESS_TOKEN }}
+          TERRAFORM_JSON_FILE_PATH: '${{ github.workspace }}/tfplan.json'
+          ORGANIZATION_NAME: 'my-organization-sandbox'
+
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+            \n
+            \`\`\`terraform\n${{ steps.plan.outputs.stdout }}
+            \`\`\`
+            </details>`;
+
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
 
       - name: Post comments
         uses: actions/github-script@v5
@@ -38,15 +88,12 @@ jobs:
               additional_message = `There are ${numberOfSeatsInShortage} seats missing. Please add seats.\n`
             }
             output += additional_message
-
             notExistedUsernamesMessage = `all users exists in GitHub.\n`
             If (${{steps.seats_members.outputs.not_existed_usernames_in_github}}.length > 0) {
               joinedNotExistedUsernames = ${{steps.seats_members.outputs.not_existed_usernames_in_github}}.join()
               notExistedUsernamesMessage = `Some GitHub user are not existed. UserList: ${joinedNotExistedUsernames}\n`
             }
-
             output += notExistedUsernamesMessage
-
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
