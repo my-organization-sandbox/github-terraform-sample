@@ -52,7 +52,7 @@ jobs:
         env:
           ACCESS_TOKEN: ${{ secrets.GH_ADMIN_ACCESS_TOKEN }}
           TERRAFORM_JSON_FILE_PATH: '${{ github.workspace }}/tfplan.json'
-          ORGANIZATION_NAME: 'organization_name'
+          ORGANIZATION_NAME: 'my-organization-sandbox'
 
       - uses: actions/github-script@v6
         with:
