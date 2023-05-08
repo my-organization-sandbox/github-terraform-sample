@@ -51,7 +51,7 @@ jobs:
         uses: M-Yamashita01/check-members@v0.9
         env:
           ACCESS_TOKEN: ${{ secrets.GH_ADMIN_ACCESS_TOKEN }}
-          TERRAFORM_DIRECTORY_PATH: '${{ github.workspace }}/terraform/directory/path' 
+          TERRAFORM_JSON_FILE_PATH: '${{ github.workspace }}/tfplan.json'
           ORGANIZATION_NAME: 'organization_name'
 
       - uses: actions/github-script@v6
