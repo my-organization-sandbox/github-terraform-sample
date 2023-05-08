@@ -36,6 +36,11 @@ jobs:
           rm plan-binary
           rm tfplan.json
 
+      - uses: actions/download-artifact@v2
+        with:
+          name: tfplan
+          path: tfplan.json
+
       - name: Set up ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -48,11 +53,6 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.GH_ADMIN_ACCESS_TOKEN }}
           TERRAFORM_DIRECTORY_PATH: '${{ github.workspace }}/terraform/directory/path' 
           ORGANIZATION_NAME: 'organization_name'
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: tfplan
-          path: tfplan.json
 
       - uses: actions/github-script@v6
         with:
